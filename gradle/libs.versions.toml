@@ -22,7 +22,7 @@ coroutines = "1.10.2"
 serialization = "1.9.0"
 multiplatform-settings = "1.3.0"
 firebase-gitlive = "2.3.0"
-kmpViewModel = "1.0.0-ALPHA-18"
+kmpViewModel = "1.0.0-BETA-13"
 firebaseCommonKtx = "21.0.0"
 
 [libraries]
@@ -66,7 +66,7 @@ firebase-common = { module = "dev.gitlive:firebase-common", version.ref = "fireb
 firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
 
 # KMP ViewModel
-kmp-observableviewmodel = { module = "com.rickclephas.kmp:kmp-observableviewmodel", version.ref = "kmpViewModel" }
+kmp-observableviewmodel-core = { module = "com.rickclephas.kmp:kmp-observableviewmodel-core", version.ref = "kmpViewModel" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

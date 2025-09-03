@@ -5,6 +5,7 @@ import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.FieldValue
+import dev.gitlive.firebase.firestore.Filter
 
 interface HouseRepository {
     suspend fun createHouse(houseName: String, creatorId: String, allowlist: List<String>): Result<String>
@@ -46,7 +47,7 @@ class HouseRepositoryImpl(
                 return Result.failure(Exception("Invalid house code."))
             }
 
-            val houseId = codeDoc.data["houseId"] as? String ?: return Result.failure(Exception("House ID not found."))
+            val houseId = codeDoc.data<Map<String, Any?>>()["houseId"] as? String ?: return Result.failure(Exception("House ID not found."))
             val houseDocRef = housesCollection.document(houseId)
             val house = houseDocRef.get().data<House>()
 
@@ -58,7 +59,7 @@ class HouseRepositoryImpl(
                 return Result.failure(Exception("You are not invited to join this house."))
             }
 
-            houseDocRef.update(mapOf("members" to FieldValue.arrayUnion(userId)))
+            houseDocRef.update("members" to FieldValue.arrayUnion(userId))
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -67,7 +68,7 @@ class HouseRepositoryImpl(
 
     override suspend fun getUserHouses(userId: String): Result<List<House>> {
         return try {
-            val querySnapshot = housesCollection.whereArrayContains("members", userId).get()
+            val querySnapshot = housesCollection.where(Filter.arrayContains("members", userId)).get()
             val houses = querySnapshot.documents.map { it.data<House>() }
             Result.success(houses)
         } catch (e: Exception) {
