@@ -1,11 +1,8 @@
 package com.faultyplay.gharkekaam.core.data.repository
 
 import com.faultyplay.gharkekaam.core.data.model.House
-import dev.gitlive.firebase.firestore.FirebaseFirestore
-import dev.gitlive.firebase.firestore.firestore
-import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.FieldValue
-import dev.gitlive.firebase.firestore.Filter
+import dev.gitlive.firebase.firestore.FirebaseFirestore
 
 interface HouseRepository {
     suspend fun createHouse(houseName: String, creatorId: String, allowlist: List<String>): Result<String>
@@ -23,7 +20,7 @@ class HouseRepositoryImpl(
     override suspend fun createHouse(houseName: String, creatorId: String, allowlist: List<String>): Result<String> {
         return try {
             val houseCode = generateUniqueHouseCode()
-            val newHouseRef = housesCollection.document() // Auto-generate ID
+            val newHouseRef = housesCollection.document // Auto-generate ID
             val house = House(
                 houseId = newHouseRef.id,
                 name = houseName,
@@ -68,7 +65,7 @@ class HouseRepositoryImpl(
 
     override suspend fun getUserHouses(userId: String): Result<List<House>> {
         return try {
-            val querySnapshot = housesCollection.where(Filter.arrayContains("members", userId)).get()
+            val querySnapshot = housesCollection.where{ all ("members" equalTo userId)}.get()
             val houses = querySnapshot.documents.map { it.data<House>() }
             Result.success(houses)
         } catch (e: Exception) {

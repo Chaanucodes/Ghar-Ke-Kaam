@@ -6,13 +6,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rickclephas.kmp.observableviewmodel.koin.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun JoinHouseScreen(
     onHouseJoined: () -> Unit
 ) {
-    val viewModel: JoinHouseViewModel = getViewModel()
+    val viewModel: JoinHouseViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.isSuccess) {

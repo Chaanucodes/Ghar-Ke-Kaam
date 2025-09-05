@@ -28,7 +28,7 @@ class HouseListViewModel(
     }
 
     fun loadUserHouses() {
-        launch {
+        viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             val currentUser = authRepository.getCurrentUser()
             if (currentUser == null) {

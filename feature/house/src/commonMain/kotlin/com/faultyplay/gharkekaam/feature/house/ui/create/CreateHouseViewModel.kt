@@ -34,7 +34,7 @@ class CreateHouseViewModel(
     }
 
     fun createHouse() {
-        launch {
+        viewModelScope.launch {
             val currentUser = authRepository.getCurrentUser()
             if (currentUser == null) {
                 _uiState.update { it.copy(error = "You must be signed in to create a house.") }

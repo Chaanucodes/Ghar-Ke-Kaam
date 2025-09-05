@@ -26,7 +26,12 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.composeVM)
             implementation(libs.kmp.observableviewmodel.core)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

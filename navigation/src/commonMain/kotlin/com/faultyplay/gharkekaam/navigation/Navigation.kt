@@ -1,6 +1,7 @@
 package com.faultyplay.gharkekaam.navigation
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -46,7 +47,7 @@ class Navigator {
 }
 
 // Simple subscribe extension for StateFlow in common code
-private fun <T> MutableStateFlow<T>.subscribe(onEach: (T) -> Unit) {
+private fun <T> StateFlow<T>.subscribe(onEach: (T) -> Unit) {
     // This is a simplified subscription for common code.
     // In a real app, you would use a more robust way to collect flows
     // that is tied to a lifecycle, but for a simple navigator state, this is sufficient.

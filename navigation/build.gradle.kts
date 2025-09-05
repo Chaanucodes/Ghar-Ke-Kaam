@@ -26,6 +26,7 @@ kotlin {
             implementation(project(":feature:house"))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.composeVM)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -28,7 +28,7 @@ class JoinHouseViewModel(
     }
 
     fun joinHouse() {
-        launch {
+        viewModelScope.launch {
             val currentUser = authRepository.getCurrentUser()
             if (currentUser == null || currentUser.email == null) {
                 _uiState.update { it.copy(error = "You must be signed in to join a house.") }
@@ -40,7 +40,7 @@ class JoinHouseViewModel(
             val result = houseRepository.joinHouse(
                 houseCode = _uiState.value.houseCode,
                 userId = currentUser.uid,
-                userEmail = currentUser.email
+                userEmail = currentUser.email?: ""
             )
 
             result.onSuccess {

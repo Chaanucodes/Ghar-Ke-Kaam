@@ -6,7 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rickclephas.kmp.observableviewmodel.koin.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HouseListScreen(
@@ -14,7 +14,7 @@ fun HouseListScreen(
     onJoinHouseClicked: () -> Unit,
     onHouseClicked: (houseId: String) -> Unit
 ) {
-    val viewModel: HouseListViewModel = getViewModel()
+    val viewModel: HouseListViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize()) {

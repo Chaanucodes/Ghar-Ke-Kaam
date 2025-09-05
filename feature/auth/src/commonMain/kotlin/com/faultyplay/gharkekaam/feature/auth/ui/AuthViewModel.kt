@@ -41,7 +41,7 @@ class AuthViewModel(
     }
 
     fun onSignInClicked() {
-        launch {
+        viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             val result = authRepository.signIn(_uiState.value.email, _uiState.value.password)
             result.onSuccess {
@@ -53,7 +53,7 @@ class AuthViewModel(
     }
 
     fun onSignUpClicked() {
-        launch {
+        viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             val result = authRepository.signUp(_uiState.value.email, _uiState.value.password)
             result.onSuccess {

@@ -6,13 +6,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rickclephas.kmp.observableviewmodel.koin.getViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AuthScreen(
     onSignInSuccess: () -> Unit
 ) {
-    val viewModel: AuthViewModel = getViewModel()
+    val viewModel: AuthViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
     if (uiState.isSignedIn) {
