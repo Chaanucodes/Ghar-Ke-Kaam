@@ -1,8 +1,12 @@
 package com.faultyplay.gharkekaam.navigation
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 /**
@@ -19,17 +23,20 @@ sealed interface Screen {
  * A simple navigator class to manage the navigation stack.
  * It exposes the current screen as a StateFlow to be observed by the UI.
  */
-class Navigator {
+class Navigator(coroutineScope: CoroutineScope) {
     private val _backStack = MutableStateFlow<List<Screen>>(listOf(Screen.Auth))
-    val backStack = _backStack.asStateFlow()
+    val backStack: StateFlow<List<Screen>> = _backStack.asStateFlow()
 
-    val currentScreen = MutableStateFlow(_backStack.value.last())
+    // ✅ Derive currentScreen directly from the backStack flow
+    val currentScreen: StateFlow<Screen> = backStack.map { stack ->
+        stack.lastOrNull() ?: Screen.Auth // Get the last screen or default
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = _backStack.value.last()
+    )
 
-    init {
-        _backStack.asStateFlow().subscribe {
-            currentScreen.value = it.lastOrNull() ?: Screen.Auth // Default to Auth if stack is empty
-        }
-    }
+    // No init block or custom subscribe function is needed.
 
     fun navigateTo(screen: Screen) {
         _backStack.update { it + screen }

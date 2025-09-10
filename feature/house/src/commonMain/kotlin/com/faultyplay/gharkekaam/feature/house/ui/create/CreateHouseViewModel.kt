@@ -36,8 +36,8 @@ class CreateHouseViewModel(
     fun createHouse() {
         viewModelScope.launch {
             val currentUser = authRepository.getCurrentUser()
-            if (currentUser == null) {
-                _uiState.update { it.copy(error = "You must be signed in to create a house.") }
+            if (currentUser == null || currentUser.email == null) {
+                _uiState.update { it.copy(error = "You must be signed in with an email to create a house.") }
                 return@launch
             }
 
@@ -45,9 +45,10 @@ class CreateHouseViewModel(
 
             val emails = _uiState.value.allowlistEmails.split(',').map { it.trim() }.filter { it.isNotBlank() }
 
+
             val result = houseRepository.createHouse(
                 houseName = _uiState.value.houseName,
-                creatorId = currentUser.uid,
+                creatorId = currentUser.email!!,
                 allowlist = emails
             )
 

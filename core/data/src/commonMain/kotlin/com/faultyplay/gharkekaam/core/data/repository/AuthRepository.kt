@@ -1,8 +1,10 @@
 package com.faultyplay.gharkekaam.core.data.repository
 
 import com.faultyplay.gharkekaam.core.data.model.User
+import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
+import dev.gitlive.firebase.auth.auth
 
 interface AuthRepository {
     suspend fun signIn(email: String, password: String): Result<User>
@@ -45,7 +47,7 @@ class AuthRepositoryImpl(
     }
 
     override fun getCurrentUser(): User? {
-        return firebaseAuth.currentUser?.toDomainUser()
+        return Firebase.auth.currentUser?.toDomainUser()
     }
 
     override suspend fun signOut() {

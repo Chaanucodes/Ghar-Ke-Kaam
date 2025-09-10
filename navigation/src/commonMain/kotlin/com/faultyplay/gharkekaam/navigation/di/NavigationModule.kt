@@ -4,5 +4,5 @@ import com.faultyplay.gharkekaam.navigation.Navigator
 import org.koin.dsl.module
 
 val navigationModule = module {
-    single { Navigator() }
+    single { Navigator(coroutineScope = get()) }
 }

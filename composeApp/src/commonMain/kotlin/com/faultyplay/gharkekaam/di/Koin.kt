@@ -1,5 +1,6 @@
 package com.faultyplay.gharkekaam.di
 
+import com.faultyplay.gharkekaam.core.data.di.appScopeModule
 import com.faultyplay.gharkekaam.core.data.di.dataModule
 import com.faultyplay.gharkekaam.feature.auth.di.authModule
 import com.faultyplay.gharkekaam.feature.house.di.houseModule
@@ -11,6 +12,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
     startKoin {
         appDeclaration()
         modules(
+            appScopeModule,
             authModule,
             dataModule,
             navigationModule,
