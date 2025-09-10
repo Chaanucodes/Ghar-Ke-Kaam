@@ -81,7 +81,8 @@ class HouseRepositoryImpl(
                 return Result.success(emptyList())
             }
 
-            val querySnapshot = housesCollection.where { "houseId" `in` houseIds }.get()
+            val querySnapshot = housesCollection.where { "houseId" inArray houseIds }.get()
+
             val houses = querySnapshot.documents.map { it.data<House>() }
             Result.success(houses)
         } catch (e: Exception) {
