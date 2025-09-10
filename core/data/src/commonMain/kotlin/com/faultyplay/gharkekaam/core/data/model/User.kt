@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class User(
     val uid: String,
     val name: String? = null,
-    val email: String? = null
+    val email: String? = null,
+    val houses: List<String> = emptyList()
 )

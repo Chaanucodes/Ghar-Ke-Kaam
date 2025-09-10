@@ -16,6 +16,7 @@ class HouseRepositoryImpl(
 
     private val housesCollection = firestore.collection("houses")
     private val houseCodesCollection = firestore.collection("houseCodes")
+    private val usersCollection = firestore.collection("users")
 
     override suspend fun createHouse(houseName: String, creatorId: String, allowlist: List<String>): Result<String> {
         return try {
@@ -30,6 +31,9 @@ class HouseRepositoryImpl(
 
             newHouseRef.set(house)
             houseCodesCollection.document(houseCode).set(mapOf("houseId" to newHouseRef.id))
+            // Update user's houses list
+            usersCollection.document(creatorId).update("houses" to FieldValue.arrayUnion(newHouseRef.id))
+
 
             Result.success(houseCode)
         } catch (e: Exception) {
@@ -57,6 +61,7 @@ class HouseRepositoryImpl(
             }
 
             houseDocRef.update("members" to FieldValue.arrayUnion(userId))
+            usersCollection.document(userId).update("houses" to FieldValue.arrayUnion(houseId))
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -65,7 +70,18 @@ class HouseRepositoryImpl(
 
     override suspend fun getUserHouses(userId: String): Result<List<House>> {
         return try {
-            val querySnapshot = housesCollection.where{ all ("members" equalTo userId)}.get()
+            val userDoc = usersCollection.document(userId).get()
+            if (!userDoc.exists) {
+                return Result.failure(Exception("User document not found."))
+            }
+            val user = userDoc.data<com.faultyplay.gharkekaam.core.data.model.User>()
+            val houseIds = user.houses
+
+            if (houseIds.isEmpty()) {
+                return Result.success(emptyList())
+            }
+
+            val querySnapshot = housesCollection.where { "houseId" `in` houseIds }.get()
             val houses = querySnapshot.documents.map { it.data<House>() }
             Result.success(houses)
         } catch (e: Exception) {

@@ -15,6 +15,6 @@ val dataModule = module {
     single { Firebase.firestore }
 
     // Repositories
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<HouseRepository> { HouseRepositoryImpl(get()) }
 }

@@ -5,6 +5,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
+import dev.gitlive.firebase.firestore.FirebaseFirestore
 
 interface AuthRepository {
     suspend fun signIn(email: String, password: String): Result<User>
@@ -14,8 +15,11 @@ interface AuthRepository {
 }
 
 class AuthRepositoryImpl(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ) : AuthRepository {
+
+    private val usersCollection = firestore.collection("users")
 
     override suspend fun signIn(email: String, password: String): Result<User> {
         return try {
@@ -36,8 +40,12 @@ class AuthRepositoryImpl(
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password)
             val firebaseUser = authResult.user
             if (firebaseUser != null) {
-                // In a real app, we would also create a user document in Firestore here.
-                Result.success(firebaseUser.toDomainUser())
+                val user = User(
+                    uid = firebaseUser.uid,
+                    email = firebaseUser.email
+                )
+                usersCollection.document(firebaseUser.uid).set(user)
+                Result.success(user)
             } else {
                 Result.failure(Exception("Sign up failed: Firebase user is null."))
             }
